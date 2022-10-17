@@ -1,6 +1,6 @@
-from abc import abstractmethod
 import pygame
 from engine.util import Time
+from engine.EventHandler import EventHandler
 
 class Window:
 	__instance = None
@@ -27,18 +27,19 @@ class Window:
 	def update(self):
 		pygame.display.flip()
 
+	def handle_events(self, handler):
+		for event in pygame.event.get():
+			handler.handle_event(event)
+
 	def __del__(self):
 		pygame.quit()
 		self.running = False
 
 
-class EventHandler:
-	def __init__(self):
-		pass
-	def poll_events(self):
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				self.onClose()
-	@abstractmethod
-	def onClose(self):
-		pass
+
+
+
+
+
+
+
