@@ -7,7 +7,7 @@ class Vector2:
 	def magnitude(self):
 		return sqrt(self.x*self.x + self.y*self.y)
 	def magnitude2(self):
-		return self.x*self.x + self.y*self.y
+		return self.x*self.x + self.y*self.yself.x, self.y, self.z
 	def angle(self):
 		return (degrees(atan(self.y/self.x)) % 180) + (180 if self.y < 0 else 0)
 
@@ -24,42 +24,42 @@ class Vector2:
 		if type(other) == Vector2: self.x, self.y = self.x+other.x, self.y+other.y
 		elif type(other) == complex: self.x, self.y = self.x+other.real, self.y+other.imag
 		elif type(other) in (int, float): self.x, self.y = self.x+other, self.y+other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __isub__(self, other):
 		if type(other) == Vector2: self.x, self.y = self.x-other.x, self.y-other.y
 		elif type(other) == complex: self.x, self.y = self.x-other.real, self.y-other.imag
 		elif type(other) in (int, float): self.x, self.y = self.x-other, self.y-other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __imul__(self, other):
 		if type(other) == Vector2: self.x, self.y = self.x*other.x, self.y*other.y
 		elif type(other) == complex: self.x, self.y = self.x*other.real, self.y*other.imag
 		elif type(other) in (int, float): self.x, self.y = self.x*other, self.y*other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __ifloordiv__(self, other):
 		if type(other) == Vector2: self.x, self.y = self.x//other.x, self.y//other.y
 		elif type(other) == complex: self.x, self.y = self.x//other.real, self.y//other.imag
 		elif type(other) in (int, float): self.x, self.y = self.x//other, self.y//other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __idiv__(self, other):
 		if type(other) == Vector2: self.x, self.y = self.x/other.x, self.y/other.y
 		elif type(other) == complex: self.x, self.y = self.x/other.real, self.y/other.imag
 		elif type(other) in (int, float): self.x, self.y = self.x/other, self.y/other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __itruediv__(self, other):
 		if type(other) == Vector2: self.x, self.y = self.x/other.x, self.y/other.y
 		elif type(other) == complex: self.x, self.y = self.x/other.real, self.y/other.imag
 		elif type(other) in (int, float): self.x, self.y = self.x/other, self.y/other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __imod__(self, other):
 		if type(other) == Vector2: self.x, self.y = self.x%other.x, self.y%other.y
 		elif type(other) == complex: self.x, self.y = self.x%other.real, self.y%other.imag
 		elif type(other) in (int, float): self.x, self.y = self.x%other, self.y%other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __ipow__(self, other):
 		if type(other) == Vector2: self.x, self.y = self.x**other.x, self.y**other.y
 		elif type(other) == complex: self.x, self.y = self.x**other.real, self.y**other.imag
 		elif type(other) in (int, float): self.x, self.y = self.x**other, self.y**other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __ilshift__(self): pass
 	def __irshift__(self): pass
 	def __iand__(self): pass
@@ -80,72 +80,72 @@ class Vector2:
 		if type(other) == Vector2: return Vector2(self.x+other.x, self.y+other.y)
 		elif type(other) == complex: return Vector2(self.x+other.real, self.y+other.imag)
 		elif type(other) in (int, float): return Vector2(self.x+other, self.y+other)
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __sub__(self, other):
 		if type(other) == Vector2: return Vector2(self.x-other.x, self.y-other.y)
 		elif type(other) == complex: return Vector2(self.x-other.real, self.y-other.imag)
 		elif type(other) in (int, float): return Vector2(self.x-other, self.y-other)
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __mul__(self, other):
 		if type(other) == Vector2: return Vector2(self.x*other.x, self.y*other.y)
 		elif type(other) == complex: return Vector2(self.x*other.real, self.y*other.imag)
 		elif type(other) in (int, float): return Vector2(self.x*other, self.y*other)
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __floordiv__(self, other):
 		if type(other) == Vector2: return Vector2(self.x//other.x, self.y//other.y)
 		elif type(other) == complex: return Vector2(self.x//other.real, self.y//other.imag)
 		elif type(other) in (int, float): return Vector2(self.x//other, self.y//other)
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __div__(self, other):
 		if type(other) == Vector2: return Vector2(self.x/other.x, self.y/other.y)
 		elif type(other) == complex: return Vector2(self.x/other.real, self.y/other.imag)
 		elif type(other) in (int, float): return Vector2(self.x/other, self.y/other)
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __truediv__(self, other):
 		if type(other) == Vector2: return Vector2(self.x/other.x, self.y/other.y)
 		elif type(other) == complex: return Vector2(self.x/other.real, self.y/other.imag)
 		elif type(other) in (int, float): return Vector2(self.x/other, self.y/other)
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __mod__(self, other):
 		if type(other) == Vector2: return Vector2(self.x%other.x, self.y%other.y)
 		elif type(other) == complex: return Vector2(self.x%other.real, self.y%other.imag)
 		elif type(other) in (int, float): return Vector2(self.x%other, self.y%other)
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __pow__(self, other):
 		if type(other) == Vector2: return Vector2(self.x**other.x, self.y**other.y)
 		elif type(other) == complex: return Vector2(self.x**other.real, self.y**other.imag)
 		elif type(other) in (int, float): return Vector2(self.x**other, self.y**other)
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __eq__(self, other):
 		if type(other) == Vector2: return (self.x==other.x) and (self.y==other.y)
 		elif type(other) == complex: return (self.x==other.real) and (self.y==other.imag)
 		elif type(other) in (int, float): return self.magnitude() == other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __ne__(self, other):
 		if type(other) == Vector2: return not ((self.x==other.x) and (self.y==other.y))
 		elif type(other) == complex: return not ((self.x==other.real) and (self.y==other.imag))
 		elif type(other) in (int, float): self.magnitude() != other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __lt__(self, other):
 		if type(other) == Vector2: return not ((self.x<other.x) and (self.y<other.y))
 		elif type(other) == complex: return not ((self.x<other.real) and (self.y<other.imag))
 		elif type(other) in (int, float): self.magnitude() < other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __le__(self, other):
 		if type(other) == Vector2: return not ((self.x<=other.x) and (self.y<=other.y))
 		elif type(other) == complex: return not ((self.x<=other.real) and (self.y<=other.imag))
 		elif type(other) in (int, float): self.magnitude() <= other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __gt__(self, other):
 		if type(other) == Vector2: return not ((self.x>other.x) and (self.y>other.y))
 		elif type(other) == complex: return not ((self.x>other.real) and (self.y>other.imag))
 		elif type(other) in (int, float): self.magnitude() > other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __ge__(self, other):
 		if type(other) == Vector2: return not ((self.x>=other.x) and (self.y>=other.y))
 		elif type(other) == complex: return not ((self.x>=other.real) and (self.y>=other.imag))
 		elif type(other) in (int, float): self.magnitude() >= other
-		else: raise Exception()
+		else: raise NotImplemented()
 
 class Vector3:
 	def __init__(self, x, y, z):
@@ -169,35 +169,35 @@ class Vector3:
 	def __iadd__(self, other):
 		if type(other) == Vector3: self.x, self.y, self.z = self.x+other.x, self.y+other.y, self.z+other.z
 		elif type(other) in (int, float): self.x, self.y, self.z = self.x+other, self.y+other, self.z+other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __isub__(self, other):
 		if type(other) == Vector3: self.x, self.y, self.z = self.x-other.x, self.y-other.y, self.z-other.z
 		elif type(other) in (int, float): self.x, self.y, self.z = self.x-other, self.y-other, self.z-other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __imul__(self, other):
 		if type(other) == Vector3: self.x, self.y, self.z = self.x*other.x, self.y*other.y, self.z*other.z
 		elif type(other) in (int, float): self.x, self.y, self.z = self.x*other, self.y*other, self.z*other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __ifloordiv__(self, other):
 		if type(other) == Vector3: self.x, self.y, self.z = self.x//other.x, self.y//other.y, self.z//other.z
 		elif type(other) in (int, float): self.x, self.y, self.z = self.x//other, self.y//other, self.z//other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __idiv__(self, other):
 		if type(other) == Vector3: self.x, self.y, self.z = self.x/other.x, self.y/other.y, self.z/other.z
 		elif type(other) in (int, float): self.x, self.y, self.z = self.x/other, self.y/other, self.z/other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __itruediv__(self, other):
 		if type(other) == Vector3: self.x, self.y, self.z = self.x/other.x, self.y/other.y, self.z/other.z
 		elif type(other) in (int, float): self.x, self.y, self.z = self.x/other, self.y/other, self.z/other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __imod__(self, other):
 		if type(other) == Vector3: self.x, self.y, self.z = self.x%other.x, self.y%other.y, self.z&other.z
 		elif type(other) in (int, float): self.x, self.y, self.z = self.x%other, self.y%other, self.z%other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __ipow__(self, other):
 		if type(other) == Vector3: self.x, self.y, self.z = self.x**other.x, self.y**other.y, self.z**other.z
 		elif type(other) in (int, float): self.x, self.y, self.z = self.x**other, self.y**other, self.z**other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __ilshift__(self): pass
 	def __irshift__(self): pass
 	def __iand__(self): pass
@@ -217,56 +217,56 @@ class Vector3:
 	def __add__(self, other):
 		if type(other) == Vector3: return Vector3(self.x+other.x, self.y+other.y, self.z+other.z)
 		elif type(other) in (int, float): return Vector3(self.x+other, self.y+other, self.z+other)
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __sub__(self, other):
 		if type(other) == Vector3: return Vector3(self.x-other.x, self.y-other.y, self.z-other.z)
 		elif type(other) in (int, float): return Vector3(self.x-other, self.y-other, self.z-other)
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __mul__(self, other):
 		if type(other) == Vector3: return Vector3(self.x*other.x, self.y*other.y, self.z*other.z)
 		elif type(other) in (int, float): return Vector3(self.x*other, self.y*other, self.z*other)
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __floordiv__(self, other):
 		if type(other) == Vector3: return Vector3(self.x//other.x, self.y//other.y, self.z//other.z)
 		elif type(other) in (int, float): return Vector3(self.x//other, self.y//other, self.z//other)
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __div__(self, other):
 		if type(other) == Vector3: return Vector3(self.x/other.x, self.y/other.y, self.z/other.z)
 		elif type(other) in (int, float): return Vector3(self.x/other, self.y/other, self.z/other)
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __truediv__(self, other):
 		if type(other) == Vector3: return Vector3(self.x/other.x, self.y/other.y, self.z/other.z)
 		elif type(other) in (int, float): return Vector3(self.x/other, self.y/other, self.z/other)
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __mod__(self, other):
 		if type(other) == Vector3: return Vector3(self.x%other.x, self.y%other.y, self.z%other.z)
 		elif type(other) in (int, float): return Vector3(self.x%other, self.y%other, self.z%other)
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __pow__(self, other):
 		if type(other) == Vector3: return Vector3(self.x**other.x, self.y**other.y, self.z**other.z)
 		elif type(other) in (int, float): return Vector3(self.x**other, self.y**other, self.z**other)
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __eq__(self, other):
 		if type(other) == Vector3: return (self.x==other.x) and (self.y==other.y) and (self.z==other.z)
 		elif type(other) in (int, float): return self.magnitude() == other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __ne__(self, other):
 		if type(other) == Vector3: return not ((self.x==other.x) and (self.y==other.y) and (self.z==other.z))
 		elif type(other) in (int, float): self.magnitude() != other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __lt__(self, other):
 		if type(other) == Vector3: return ((self.x<other.x) and (self.y<other.y) and (self.z<other.z))
 		elif type(other) in (int, float): self.magnitude() < other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __le__(self, other):
 		if type(other) == Vector3: return ((self.x<=other.x) and (self.y<=other.y) and (self.z<=other.z))
 		elif type(other) in (int, float): self.magnitude() <= other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __gt__(self, other):
 		if type(other) == Vector3: return ((self.x>other.x) and (self.y>other.y) and (self.z>other.z))
 		elif type(other) in (int, float): self.magnitude() > other
-		else: raise Exception()
+		else: raise NotImplemented()
 	def __ge__(self, other):
 		if type(other) == Vector3: return ((self.x>=other.x) and (self.y>=other.y) and (self.z>=other.z))
 		elif type(other) in (int, float): self.magnitude() >= other
-		else: raise Exception()
+		else: raise NotImplemented()
