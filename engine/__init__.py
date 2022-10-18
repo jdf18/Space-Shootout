@@ -1,6 +1,6 @@
 import pygame
 from engine.util import Time
-from engine.EventHandler import EventHandler
+from engine.eventHandler import EventHandler
 
 class Window:
 	__instance = None

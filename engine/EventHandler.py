@@ -4,7 +4,7 @@ from pygame.constants import *
 class EventHandler:
 	def __init__(self):
 		pass
-	def handle_events(self, event):
+	def handle_event(self, event):
 		# Pygame 1:
 		if event.type == QUIT:
 			self.onClose()
@@ -17,9 +17,9 @@ class EventHandler:
 		elif event.type == MOUSEMOTION:
 			self.onMouseMotion(event.pos, event.rel, event.buttons, event.touch)
 		elif event.type == MOUSEBUTTONUP:
-			self.onMouseButtonUp(event.pos, event.buttons, event.touch)
+			self.onMouseButtonUp(event.pos, event.button, event.touch)
 		elif event.type == MOUSEBUTTONDOWN:
-			self.onMouseButtonDown(event.pos, event.buttons, event.touch)
+			self.onMouseButtonDown(event.pos, event.button, event.touch)
 		elif event.type == JOYAXISMOTION:
 			self.onJoyAxisMotion(event.instance_id, event.axis, event.value)
 		elif event.type == JOYBALLMOTION:
@@ -145,135 +145,135 @@ class EventHandler:
 
 	# Pygame 1:
 	@abstractmethod
-	def onClose(): pass
+	def onClose(self, ): pass
 	@abstractmethod
-	def onActiveEvent(gain, state): pass
+	def onActiveEvent(self, gain, state): pass
 	@abstractmethod
-	def onKeyDown(key, mod, unicode, scancode): pass
+	def onKeyDown(self, key, mod, unicode, scancode): pass
 	@abstractmethod
-	def onKeyUp(key, mod, unicode, scancode): pass
+	def onKeyUp(self, key, mod, unicode, scancode): pass
 	@abstractmethod
-	def onMouseMotion(pos, rel, buttons, touch): pass
+	def onMouseMotion(self, pos, rel, buttons, touch): pass
 	@abstractmethod
-	def onMouseButtonUp(pos, buttons, touch): pass
+	def onMouseButtonUp(self, pos, buttons, touch): pass
 	@abstractmethod
-	def onMouseButtonDown(pos, buttons, touch): pass
+	def onMouseButtonDown(self, pos, buttons, touch): pass
 	@abstractmethod
-	def onJoyAxisMotion(instance_id, axis, value): pass
+	def onJoyAxisMotion(self, instance_id, axis, value): pass
 	@abstractmethod
-	def onJoyBallMotion(instance_id, ball, rel): pass
+	def onJoyBallMotion(self, instance_id, ball, rel): pass
 	@abstractmethod
-	def onJoyHatMotion(instance_id, hat, value): pass
+	def onJoyHatMotion(self, instance_id, hat, value): pass
 	@abstractmethod
-	def onJoyButtonUp(instance_id, button): pass
+	def onJoyButtonUp(self, instance_id, button): pass
 	@abstractmethod
-	def onJoyButtonDown(instance_id, button): pass
+	def onJoyButtonDown(self, instance_id, button): pass
 	@abstractmethod
-	def onVideoResize(size, w, h): pass
+	def onVideoResize(self, size, w, h): pass
 	@abstractmethod
-	def onVideoExpose(): pass
+	def onVideoExpose(self, ): pass
 	@abstractmethod
-	def onUserEvent(code): pass
+	def onUserEvent(self, code): pass
 	# When compiled with SDL2:
 	@abstractmethod
-	def onAudioDeviceAdded(which, iscapture): pass
+	def onAudioDeviceAdded(self, which, iscapture): pass
 	@abstractmethod
-	def onAudioDeviceRemoved(which, iscapture): pass
+	def onAudioDeviceRemoved(self, which, iscapture): pass
 	@abstractmethod
-	def onFingerMotion(touch_id, finger_id, x, y, dx, dy): pass
+	def onFingerMotion(self, touch_id, finger_id, x, y, dx, dy): pass
 	@abstractmethod
-	def onFingerDown(touch_id, finger_id, x, y, dx, dy): pass
+	def onFingerDown(self, touch_id, finger_id, x, y, dx, dy): pass
 	@abstractmethod
-	def onFingerUp(touch_id, finger_id, x, y, dx, dy): pass
+	def onFingerUp(self, touch_id, finger_id, x, y, dx, dy): pass
 	@abstractmethod
-	def onMouseWheel(which, flipped, x, y, touch, precise_x, precise_y): pass
+	def onMouseWheel(self, which, flipped, x, y, touch, precise_x, precise_y): pass
 	@abstractmethod
-	def onMultigesture(touch_id, x, y, pinched, rotated, num_fingers): pass
+	def onMultigesture(self, touch_id, x, y, pinched, rotated, num_fingers): pass
 	@abstractmethod
-	def onTextEditing(text, start, length): pass
+	def onTextEditing(self, text, start, length): pass
 	@abstractmethod
-	def onTextInput(text): pass
+	def onTextInput(self, text): pass
 	# Added in Pygame 2:
 	@abstractmethod
-	def onDropFile(file): pass
+	def onDropFile(self, file): pass
 	@abstractmethod
-	def onDropBegin(): pass
+	def onDropBegin(self, ): pass
 	@abstractmethod
-	def onDropComplete(): pass
+	def onDropComplete(self, ): pass
 	@abstractmethod
-	def onDropText(text): pass
-	def onMidiIn(): pass
-	def onMidiOut(): pass
+	def onDropText(self, text): pass
+	def onMidiIn(self, ): pass
+	def onMidiOut(self, ): pass
 	@abstractmethod
-	def onControllerDeviceAdded(device_index): pass
+	def onControllerDeviceAdded(self, device_index): pass
 	@abstractmethod
-	def onJoyDeviceAdded(device_index): pass
+	def onJoyDeviceAdded(self, device_index): pass
 	@abstractmethod
-	def onControllerDeviceRemoved(instance_id): pass
+	def onControllerDeviceRemoved(self, instance_id): pass
 	@abstractmethod
-	def onJoyDeviceRemoved(instance_id): pass
+	def onJoyDeviceRemoved(self, instance_id): pass
 	@abstractmethod
-	def onControllerDeviceRemapped(instance_id): pass
-	# Window events (PG 2.0.1)
+	def onControllerDeviceRemapped(self, instance_id): pass
+	# Window events (self, PG 2.0.1)
 	@abstractmethod
-	def onWindowShown(window): pass
+	def onWindowShown(self, window): pass
 	@abstractmethod
-	def onWindowHidden(window): pass
+	def onWindowHidden(self, window): pass
 	@abstractmethod
-	def onWindowExposed(window): pass
+	def onWindowExposed(self, window): pass
 	@abstractmethod
-	def onWindowMoved(window, x, y): pass
+	def onWindowMoved(self, window, x, y): pass
 	@abstractmethod
-	def onWindowResized(window, x, y): pass
+	def onWindowResized(self, window, x, y): pass
 	@abstractmethod
-	def onWindowSizeChanged(window): pass
+	def onWindowSizeChanged(self, window): pass
 	@abstractmethod
-	def onWindowMinimized(window): pass
+	def onWindowMinimized(self, window): pass
 	@abstractmethod
-	def onWindowMaximised(window): pass
+	def onWindowMaximised(self, window): pass
 	@abstractmethod
-	def onWindowRestored(window): pass
+	def onWindowRestored(self, window): pass
 	@abstractmethod
-	def onWindowEnter(window): pass
+	def onWindowEnter(self, window): pass
 	@abstractmethod
-	def onWindowLeave(window): pass
+	def onWindowLeave(self, window): pass
 	@abstractmethod
-	def onWindowFocusGained(window): pass
+	def onWindowFocusGained(self, window): pass
 	@abstractmethod
-	def onWindowFocusLost(window): pass
+	def onWindowFocusLost(self, window): pass
 	@abstractmethod
-	def onWindowClose(window): pass
+	def onWindowClose(self, window): pass
 	@abstractmethod
-	def onWindowTakeFocus(window): pass
+	def onWindowTakeFocus(self, window): pass
 	@abstractmethod
-	def onWindowHitTest(window): pass
+	def onWindowHitTest(self, window): pass
 	@abstractmethod
-	def onWindowIccProfileChanged(window): pass
+	def onWindowIccProfileChanged(self, window): pass
 	@abstractmethod
-	def onWindowDisplayChanged(window, display_index): pass
+	def onWindowDisplayChanged(self, window, display_index): pass
 	# Added in Pygame 2.1.3:
 	@abstractmethod
-	def onKeyMapChanged(): pass
+	def onKeyMapChanged(self, ): pass
 	@abstractmethod
-	def onClipboardUpdate(): pass
+	def onClipboardUpdate(self, ): pass
 	@abstractmethod
-	def onRenderTargetsReset(): pass
+	def onRenderTargetsReset(self, ): pass
 	@abstractmethod
-	def onRenderDeviceReset(): pass
+	def onRenderDeviceReset(self, ): pass
 	@abstractmethod
-	def onLocaleChanged(): pass
-	# On Android (PG 2.1.3)
+	def onLocaleChanged(self, ): pass
+	# On Android (self, PG 2.1.3)
 	@abstractmethod
-	def onAppTerminating(): pass
+	def onAppTerminating(self, ): pass
 	@abstractmethod
-	def onAppLowMemory(): pass
+	def onAppLowMemory(self, ): pass
 	@abstractmethod
-	def onAppWillEnterBackground(): pass
+	def onAppWillEnterBackground(self, ): pass
 	@abstractmethod
-	def onAppEnteredBackground(): pass
+	def onAppEnteredBackground(self, ): pass
 	@abstractmethod
-	def onAppWillEnterForeground(): pass
+	def onAppWillEnterForeground(self, ): pass
 	@abstractmethod
-	def onAppEnteredForeground(): pass
+	def onAppEnteredForeground(self, ): pass
 	@abstractmethod
-	def onUnknownEvent(): pass
+	def onUnknownEvent(self, ): pass

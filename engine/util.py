@@ -5,3 +5,8 @@ class Time:
 	@staticmethod
 	def time():
 		return time()
+
+def createPrintCallback(message):
+	def callback(*args):
+		print(message)
+	return callback
