@@ -1,6 +1,7 @@
 import pygame
 from engine.eventHandler import EventHandler
 from engine.util import Time
+from engine.sceneManager import SceneManager
 
 class Window:
 	__instance = None
@@ -19,6 +20,8 @@ class Window:
 
 		self.flags = pygame.RESIZABLE | pygame.SHOWN
 		self.begin_time = Time.start_time
+
+		self.sceneManager = SceneManager()
 
 		pygame.init()
 		assert pygame.get_init(), "Pygame has not been successfully initialized."
