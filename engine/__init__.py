@@ -40,6 +40,9 @@ class Window:
 		for event in pygame.event.get():
 			handler.handle_event(event)
 
+	def render(self):
+		self.sceneManager.current_scene.render(pygame)
+
 	def __del__(self):
 		pygame.quit()
 		self.running = False
