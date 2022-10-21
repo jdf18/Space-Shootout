@@ -1,9 +1,12 @@
 import engine
+from engine.assetsManager import AssetsManager, Asset
 from pygame import Vector2, Vector3
 from engine.constants import Constants
 from engine.util import createPrintCallback
 from pygame import BUTTON_LEFT, BUTTON_RIGHT
 
+assetsManager = AssetsManager()
+imageasset = assetsManager(Asset.ImageAsset('assets/images/test.png'))
 window = engine.Window()
 window.create((1080,720), "Space Shootout")
 
