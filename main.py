@@ -30,7 +30,7 @@ window.sceneManager.loadScene("MenuScene")
 handler = engine.EventHandler()
 def inc_vel(pos, button, touch):
 	dx = (10 if button == BUTTON_LEFT else -10)
-	window.sceneManager.current_scene.objects["TestRect"].transform.velocity += Vector2(dx,0)
+	window.sceneManager.current_scene.objects["TestRect"].transform.force += Vector2(dx,0)
 handler.onClose = window.__del__
 handler.onMouseButtonDown = inc_vel
 

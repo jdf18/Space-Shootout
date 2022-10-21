@@ -5,7 +5,7 @@ from engine.objects import Object
 class Scene:
 	def __init__(self, name:str, background_color=Vector3(255,255,255)):
 		self.name:str = name
-		self.background_color:tuple[int] = tuple(background_color)
+		self.background_color:tuple[int] = (background_color.x,background_color.y,background_color.z)
 		self.objects:dict[str,Object] = {}
 	def update(self, dt:float):
 		for obj in self.objects.values():

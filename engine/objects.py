@@ -65,10 +65,9 @@ class Components:
 			self.img_array = None
 			self.shader = None
 		def init(self, object, assetManager: AssetsManager):
-			asset:Asset.ImageAsset = assetManager.getAsset(self.asset_id)
+			asset:Asset.ImageAsset = assetManager.getAsset(self.image_asset_id)
 			self.img = asset.img
 			self.img_array:np.ndarray = asset.img_array
-
 		def update(self, dt:float, object):
 			self.position = tuple(object.transform.position)
 		def render(self, pygame):
@@ -76,6 +75,11 @@ class Components:
 			else: output_array = self.shader(self.img_array)
 			surface = image.frombuffer(output_array.tobytes(), self.img.size, self.img.mode)
 			pygame.display.get_surface().blit(surface, self.position)
+	class Clickable(Component):
+		INDEX:int=3
+		NAME:str="clickable"
+		def __init__(self):
+			pass
 
 class Object:
 	def __init__(self, name:str, position:Vector2, rotation:Vector2=Vector2(0,0), size:Vector2=Vector2(1,1)):
