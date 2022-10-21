@@ -1,6 +1,6 @@
 import pygame
-from engine.util import Time
 from engine.eventHandler import EventHandler
+from engine.util import Time
 
 class Window:
 	__instance = None
@@ -18,6 +18,7 @@ class Window:
 		self.title = title
 
 		self.flags = pygame.RESIZABLE | pygame.SHOWN
+		self.begin_time = Time.start_time
 
 		pygame.init()
 		assert pygame.get_init(), "Pygame has not been successfully initialized."
@@ -25,6 +26,11 @@ class Window:
 		pygame.display.set_mode(self.dimensions, self.flags)
 
 	def update(self):
+		self.end_time = Time.time()
+		dt = self.end_time - self.begin_time
+		# fps = 1/dt
+		self.sceneManager.update(dt)
+		self.begin_time = self.end_time
 		pygame.display.flip()
 
 	def handle_events(self, handler):

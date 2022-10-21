@@ -10,6 +10,10 @@ class Vector2:
 		return self.x*self.x + self.y*self.yself.x, self.y, self.z
 	def angle(self):
 		return (degrees(atan(self.y/self.x)) % 180) + (180 if self.y < 0 else 0)
+	@staticmethod
+	def zero(): return Vector2(0,0)
+	@staticmethod
+	def unit(): return Vector2(1,1)
 
 	def __pos__(self): return self
 	def __neg__(self): return Vector2(-self.x, -self.y)
@@ -156,6 +160,10 @@ class Vector3:
 		return sqrt((self.x*self.x) + (self.y*self.y) + (self.z*self.z))
 	def magnitude2(self):
 		return (self.x*self.x) + (self.y*self.y) + (self.z*self.z)
+	@staticmethod
+	def zero(): return Vector3(0,0,0)
+	@staticmethod
+	def unit(): return Vector3(1,1,1)
 		
 	def __pos__(self): return self
 	def __neg__(self): return Vector3(-self.x, -self.y, -self.z)

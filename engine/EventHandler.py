@@ -1,10 +1,11 @@
 from abc import abstractmethod
 from pygame.constants import *
+from pygame.event import Event
 
 class EventHandler:
 	def __init__(self):
 		pass
-	def handle_event(self, event):
+	def handle_event(self, event: Event):
 		# Pygame 1:
 		if event.type == QUIT:
 			self.onClose()
@@ -47,7 +48,7 @@ class EventHandler:
 			self.onFingerDown(event.touch_id, event.finger_id, event.x, event.y, event.dx, event.dy)
 		elif event.type == FINGERUP:
 			self.onFingerUp(event.touch_id, event.finger_id, event.x, event.y, event.dx, event.dy)
-		elif event.type == MOUSEWHEEL:
+		elif event.type == MOUSEWHEEL:  # TODO which throws error
 			self.onMouseWheel(event.which, event.flipped, event.x, event.y, event.touch, event.precise_x, event.precise_y)
 		elif event.type == MULTIGESTURE:
 			self.onMultigesture(event.touch_id, event.x, event.y, event.pinched, event.rotated, event.num_fingers)
@@ -145,7 +146,7 @@ class EventHandler:
 
 	# Pygame 1:
 	@abstractmethod
-	def onClose(self, ): pass
+	def onClose(self): pass
 	@abstractmethod
 	def onActiveEvent(self, gain, state): pass
 	@abstractmethod
@@ -171,7 +172,7 @@ class EventHandler:
 	@abstractmethod
 	def onVideoResize(self, size, w, h): pass
 	@abstractmethod
-	def onVideoExpose(self, ): pass
+	def onVideoExpose(self): pass
 	@abstractmethod
 	def onUserEvent(self, code): pass
 	# When compiled with SDL2:
@@ -197,13 +198,13 @@ class EventHandler:
 	@abstractmethod
 	def onDropFile(self, file): pass
 	@abstractmethod
-	def onDropBegin(self, ): pass
+	def onDropBegin(self): pass
 	@abstractmethod
-	def onDropComplete(self, ): pass
+	def onDropComplete(self): pass
 	@abstractmethod
 	def onDropText(self, text): pass
-	def onMidiIn(self, ): pass
-	def onMidiOut(self, ): pass
+	def onMidiIn(self): pass
+	def onMidiOut(self): pass
 	@abstractmethod
 	def onControllerDeviceAdded(self, device_index): pass
 	@abstractmethod
@@ -214,7 +215,7 @@ class EventHandler:
 	def onJoyDeviceRemoved(self, instance_id): pass
 	@abstractmethod
 	def onControllerDeviceRemapped(self, instance_id): pass
-	# Window events (self, PG 2.0.1)
+	# Window events (PG 2.0.1)
 	@abstractmethod
 	def onWindowShown(self, window): pass
 	@abstractmethod
@@ -253,27 +254,27 @@ class EventHandler:
 	def onWindowDisplayChanged(self, window, display_index): pass
 	# Added in Pygame 2.1.3:
 	@abstractmethod
-	def onKeyMapChanged(self, ): pass
+	def onKeyMapChanged(self): pass
 	@abstractmethod
-	def onClipboardUpdate(self, ): pass
+	def onClipboardUpdate(self): pass
 	@abstractmethod
-	def onRenderTargetsReset(self, ): pass
+	def onRenderTargetsReset(self): pass
 	@abstractmethod
-	def onRenderDeviceReset(self, ): pass
+	def onRenderDeviceReset(self): pass
 	@abstractmethod
-	def onLocaleChanged(self, ): pass
-	# On Android (self, PG 2.1.3)
+	def onLocaleChanged(self): pass
+	# On Android (PG 2.1.3)
 	@abstractmethod
-	def onAppTerminating(self, ): pass
+	def onAppTerminating(self): pass
 	@abstractmethod
-	def onAppLowMemory(self, ): pass
+	def onAppLowMemory(self): pass
 	@abstractmethod
-	def onAppWillEnterBackground(self, ): pass
+	def onAppWillEnterBackground(self): pass
 	@abstractmethod
-	def onAppEnteredBackground(self, ): pass
+	def onAppEnteredBackground(self): pass
 	@abstractmethod
-	def onAppWillEnterForeground(self, ): pass
+	def onAppWillEnterForeground(self): pass
 	@abstractmethod
-	def onAppEnteredForeground(self, ): pass
+	def onAppEnteredForeground(self): pass
 	@abstractmethod
-	def onUnknownEvent(self, ): pass
+	def onUnknownEvent(self): pass
