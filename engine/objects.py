@@ -85,10 +85,48 @@ class Components:
 			if not self.shader: output_array = self.img_array
 			else: output_array = self.shader(self.img_array)
 			surface = image.frombuffer(output_array.tobytes(), self.img.size, self.img.mode)
+			scale_surf:Surface = pygame.transform.scale(surface,self.dimensions)
+			if self.rotation != 0:
+				offset:Vector2 = self.dimensions/2
+				scale_surf = pygame.transform.rotate(scale_surf,self.rotation)
+				offset -= Vector2(scale_surf.get_size())/2
+			else:
+				offset = Vector2(0,0)
+			pygame.display.get_surface().blit(scale_surf, self.position+offset)
+	class Text(RComponent):
 		INDEX:int=3
+		NAME:str="text"
+		def __init__(self, text:str, color:Vector3, font_asset_id:int):
+			self.font_asset_id:int = font_asset_id
+			self.text:str = text
+			self.last_text:str = not text
+			self.color:Vector3 = color
+			self.dimensions:Vector2 = None
+		def init(self, object, assetManager: AssetsManager):
+			asset:Asset.FontAsset = assetManager.getAsset(self.font_asset_id)
+			self.font:Font = asset.font
+			self.dimensions:Vector2 = object.transform.size
+		def update(self, dt:float, object):
+			if self.last_text != self.text:
+				self.surface:Surface = self.font.render(self.text, True, self.color)
+				self.dimensions:Vector2 = Vector2(*self.surface.get_size())
+				self.last_text:str = self.text
+			self.position = Vector2(object.transform.position)
+			self.rotation:float = object.transform.rotation
+		def render(self, pygame):
+			scale_surf:Surface = self.surface # pygame.transform.scale(surface,self.dimensions)
+			if self.rotation != 0:
+				offset:Vector2 = self.dimensions/2
+				scale_surf = pygame.transform.rotate(scale_surf,self.rotation)
+				offset -= Vector2(scale_surf.get_size())/2
+			else:
+				offset = Vector2(0,0)
+			pygame.display.get_surface().blit(scale_surf, self.position+offset-self.dimensions/2)
+	class Clickable(Component):
+		INDEX:int=4
 		NAME:str="clickable"
-		def __init__(self):
-			pass
+		def __init__(self, is_static:bool):
+			self.static:bool = is_static
 
 class Object:
 	transform:Components.Transform
