@@ -197,3 +197,14 @@ class PathPrediction:
 			gravity += delta
 		return gravity
 
+def menuScene_on_update(scene:Scene, dt:float):
+	if scene.is_transfer:
+		scene.transfer_value += dt / scene.transfer_time
+		# TODO Calculate position
+		scene.objects["shuttle"].transform.position = Vector2(0,0)
+	else:
+		scene.orbit_angle += scene.angular_velocity * dt
+		# TODO Calculate position
+		pos = scene.planet_pos + Vector2(cos(radians(scene.orbit_angle)), sin(radians(scene.orbit_angle)))*scene.orbit_radius
+		scene.objects["shuttle"].transform.position = pos
+		scene.objects["shuttle"].transform.rotation = 180 - scene.orbit_angle
