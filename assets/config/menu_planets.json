@@ -4,34 +4,39 @@
 		"distance" : 0,
 		"mass" : 1E25,
 		"image" : "assets/images/sun.bmp",
-		"position" : [[0,0],[0.5,0.5]]
+		"position" : [[0,0],[0.5,0.5]],
+		"text" : ""
 	},
 	"mercury" : {
 		"order" : 1,
 		"distance" : 57909050,
 		"mass" : 3.3011E23,
 		"image" : "assets/images/mercury.bmp",
-		"position" : [[0,0],[0.25,0.75]]
+		"position" : [[0,0],[0.25,0.75]],
+		"text" : "Not implemented yet"
 	},
 	"venus" : {
 		"order" : 2,
 		"distance" : 108208000,
 		"mass" : 4.8675E24,
 		"image" : "assets/images/venus.bmp",
-		"position" : [[0,0],[0.75,0.75]]
+		"position" : [[0,0],[0.75,0.75]],
+		"text" : "Not implemented yet"
 	},
 	"earth" : {
 		"order" : 3,
 		"distance" : 149597500,
 		"mass" : 5.97217E24,
 		"image":"assets/images/earth.bmp",
-		"position" : [[0,0],[0.75,0.25]]
+		"position" : [[0,0],[0.75,0.25]],
+		"text" : "Not implemented yet"
 	},
 	"mars" : {
 		"order" : 4,
 		"distance" : 227955500,
 		"mass" : 6.4171E23,
 		"image" : "assets/images/mars.bmp",
-		"position" : [[0,0],[0.25,0.25]]
+		"position" : [[0,0],[0.25,0.25]],
+		"text" : "1v1"
 	}
 }
