@@ -5,7 +5,8 @@ from engine.constants import Constants
 from engine.objects import Components, Object
 from engine.sceneManager import Scene
 from engine.util import createPrintCallback
-from pygame import BUTTON_LEFT, BUTTON_RIGHT
+from engine.input import Input
+from pygame import BUTTON_LEFT, BUTTON_RIGHT, image, transform
 
 assetsManager = AssetsManager()
 imageasset = assetsManager(Asset.ImageAsset('assets/images/test.png'))
@@ -33,12 +34,14 @@ def inc_vel(pos, button, touch):
 	window.sceneManager.current_scene.objects["TestRect"].transform.force += Vector2(dx,0)
 handler.onClose = window.__del__
 handler.onMouseButtonDown = inc_vel
+window.start()
 
-window.update()
 window.handle_events(handler)
+window.update()
 while window.running:
 	window.render()
-	window.update()
+	dt = window.update()
+	window.update_screen()
 	window.handle_events(handler)
 
 del window
