@@ -160,3 +160,40 @@ class Player:
 			gravity += delta
 		return gravity
 
+class PathPrediction:
+	def __init__(self, iterations:int):
+		self.MAX_ITERATIONS = iterations
+		self.GRAVITY_SCALE = 5e-25
+	def update(self, planets:list[Planet], window:Window):
+		dt=0.25
+		last_point:Vector2 = self.get_player_pos(window)
+		velocity:Vector2 = window.sceneManager.scenes["GameScene"].objects["player"].transform.velocity.copy()
+		for i in range(self.MAX_ITERATIONS):
+			force = self.calcualte_resultant_gravity(planets, window, last_point)
+			velocity += force*dt
+			new_point = last_point + velocity*dt
+			if not (0 < new_point.x < window.dimensions[0] and 0 < new_point.y < window.dimensions[1]):
+				break
+			window.draw_line(last_point, new_point)
+			last_point = new_point
+
+	@staticmethod
+	def get_player_pos(window:Window) -> Vector2:
+		return (window.sceneManager.scenes["GameScene"].objects["player"].transform.position + \
+			   (window.sceneManager.scenes["GameScene"].objects["player"].transform.size/2)).copy()
+
+	def calcualte_resultant_gravity(self, planets:list[Planet], window:Window, position:Vector2):
+		gravity = Vector2(0,0)
+		for planet in planets:
+			delta = (
+				(window.sceneManager.scenes["GameScene"].objects[planet.name].transform.position + \
+					(window.sceneManager.scenes["GameScene"].objects[planet.name].transform.size/2)) - \
+					position)
+			try:
+				magnitude = delta.magnitude()
+				delta = Vector2(planet.mass*delta.x/magnitude,planet.mass*delta.y/magnitude)*self.GRAVITY_SCALE
+			except:
+				delta = Vector2(0,0)
+			gravity += delta
+		return gravity
+
