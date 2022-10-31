@@ -1,5 +1,6 @@
 import pygame
 from engine.eventHandler import EventHandler
+from engine.input import Input
 from engine.util import Time
 from engine.sceneManager import SceneManager
 
@@ -14,36 +15,47 @@ class Window:
 	
 	def create(self, dimensions, title):
 		self.running = True
-		self.dimensions = dimensions
+		self.dimensions:tuple = dimensions
 		self.width, self.height = dimensions
 		self.title = title
 
-		self.flags = pygame.RESIZABLE | pygame.SHOWN
-		self.begin_time = Time.start_time
+		self.flags = pygame.SHOWN #| pygame.RESIZABLE
 
 		self.sceneManager = SceneManager()
 
+		self.input_manager:Input = None
+
+	def start(self):
+		self.begin_time = Time.start_time
+
 		pygame.init()
 		assert pygame.get_init(), "Pygame has not been successfully initialized."
+		self.screen = pygame.display.set_mode(self.dimensions, self.flags)
 
-		pygame.display.set_mode(self.dimensions, self.flags)
+	def bind_input_manager(self, input_manager:Input):
+		self.input_manager = input_manager
 
-	def update(self):
+	def update(self) -> float:
 		self.end_time = Time.time()
 		dt = self.end_time - self.begin_time
 		# fps = 1/dt
 		self.sceneManager.update(dt)
 		self.begin_time = self.end_time
+		return dt
+	def update_screen(self):
 		pygame.display.flip()
 
 	def handle_events(self, handler):
 		for event in pygame.event.get():
-			handler.handle_event(event)
+			handler.handle_event(event, self)
 
 	def render(self):
 		self.sceneManager.current_scene.render(pygame)
+	
+	def draw_line(self, p1,p2):
+		pygame.draw.line(self.screen,(0,255,0),p1,p2,1)
 
-	def __del__(self):
+	def __del__(self, *args):
 		pygame.quit()
 		self.running = False
 

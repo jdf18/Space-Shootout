@@ -2,15 +2,17 @@ from abc import abstractmethod
 from PIL import Image
 import numpy as np
 from pygame import Vector2, Vector3, image
+from pygame import font
+from json import dumps, loads
 
 from engine.constants import Constants
 
 class Asset:
 	class Asset:
 		_type:int = Constants.ASSET_TYPE_NONE
-		def __init__(self, filename:str):
+		def __init__(self, filename:str, *args, **kwargs):
 			self.filename:str = filename
-			self.init()
+			self.init(*args, **kwargs)
 		@abstractmethod
 		def init(self): pass
 	@classmethod
@@ -38,6 +40,17 @@ class Asset:
 				contents = file.read()
 				# TODO 
 				return contents
+	class TextAsset(Asset):
+		def init(self, size:int):
+			self.size = size
+			font.init()
+			self.font = font.Font(self.filename, size)
+	class JSONAsset(Asset):
+		def init(self):
+			with open(self.filename) as file:
+				self.contents = loads(file.read())
+		def __call__(self):
+			return self.contents
 
 
 class AssetsManager:

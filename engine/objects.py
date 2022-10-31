@@ -1,8 +1,9 @@
 from abc import abstractmethod
 import numpy as np
-from pygame import Vector2, Vector3, Rect, image
+from pygame import Surface, Vector2, Vector3, Rect, image
 from engine.assetsManager import Asset, AssetsManager
 from engine.constants import Constants
+from pygame.font import Font
 
 class Components:
 	class Component:
@@ -15,6 +16,8 @@ class Components:
 		def init(self, object, assetsManager:AssetsManager): pass
 		@abstractmethod
 		def update(self, dt:float, object): pass
+		@abstractmethod
+		def __repr__(self) -> str: return ""
 	class RComponent:
 		RENDER:bool=True
 		@abstractmethod
@@ -23,15 +26,21 @@ class Components:
 	class Transform(Component):
 		INDEX=0
 		NAME="transform"
-		def __init__(self, position:Vector2, rotation:Vector2, size:Vector2):
-			self.position = position
-			self.rotation = rotation
-			self.size = size
-			self.velocity = Vector2(0,0)
-			self.force = Vector2(0,0)
+		def __init__(self, position:Vector2, rotation:float, size:Vector2):
+			self.position:Vector2 = position
+			self.rotation:float = (rotation % 360)
+			self.size:Vector2 = size
+			self.velocity:Vector2 = Vector2(0,0)
+			self.force:Vector2 = Vector2(0,0)
+			self.rect:Rect = Rect(self.position,self.size)
 		def update(self, dt:float, object):
 			self.velocity += (self.force*dt)
 			self.position += (self.velocity*dt)
+			self.rect:Rect = Rect(self.position,self.size)
+			
+			self.rotation %= 360
+		def __repr__(self) -> str:
+			return f"Position: {self.position.__repr__()}\nRotation: {self.rotation.__repr__()}\nSize: {self.size.__repr__()}"
 	class Primitive(RComponent):
 		INDEX=1
 		NAME="primitive"
@@ -68,21 +77,24 @@ class Components:
 			asset:Asset.ImageAsset = assetManager.getAsset(self.image_asset_id)
 			self.img = asset.img
 			self.img_array:np.ndarray = asset.img_array
+			self.dimensions = object.transform.size
 		def update(self, dt:float, object):
 			self.position = tuple(object.transform.position)
+			self.rotation = object.transform.rotation
 		def render(self, pygame):
 			if not self.shader: output_array = self.img_array
 			else: output_array = self.shader(self.img_array)
 			surface = image.frombuffer(output_array.tobytes(), self.img.size, self.img.mode)
-			pygame.display.get_surface().blit(surface, self.position)
-	class Clickable(Component):
 		INDEX:int=3
 		NAME:str="clickable"
 		def __init__(self):
 			pass
 
 class Object:
-	def __init__(self, name:str, position:Vector2, rotation:Vector2=Vector2(0,0), size:Vector2=Vector2(1,1)):
+	transform:Components.Transform
+	primitive:Components.Primitive
+	image:Components.Image
+	def __init__(self, name:str, position:Vector2, rotation:float=0, size:Vector2=Vector2(1,1)):
 		self.name:str = name
 		self.added_components:list[str] = ["transform"]
 		self.render_components:list[str] = []
@@ -102,3 +114,8 @@ class Object:
 		if not self.should_render: return
 		for component_name in self.render_components:
 			self.__getattribute__(component_name).render(pygame)
+	def __repr__(self):
+		out = f"Object: {self.name}\nShould render: {str(self.should_render)}\nComponents: {self.added_components}"
+		for component in self.added_components:
+			out += self.__getattribute__(component).__repr__()
+		return out
