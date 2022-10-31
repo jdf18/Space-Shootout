@@ -51,3 +51,112 @@ class Planet:
 		self.obj = Object(self.name,self.position, size=self.size)
 		self.obj.addComponent(Components.Image(self.image_asset_id), assetsManager)
 		return self.obj
+
+class Player:
+	def __init__(self, image_asset_id:int, player_id=None):
+		self.position:Vector2 = Vector2(100,100)
+		self.image_asset_id:int = image_asset_id
+
+		self.ROTATION_SPEED = 60
+		self.ACCEL_SPEED = 0.7
+		self.GRAVITY_SCALE = 5e-25
+		self.MAX_VELOCITY = 50
+
+		self.player_id = player_id
+		self.objectname = "player" + (str(player_id) if player_id else "")
+		self.scene = ("default" if not player_id else "1v1Scene")
+		# ! this will probably cause errors
+		# TODO 
+	def createGameObject(self, assetsManager:AssetsManager) -> Object:
+		self.obj = Object("player",self.position,size=Vector2(50,50))
+		self.obj.addComponent(Components.Image(self.image_asset_id), assetsManager)
+		return self.obj
+	
+	def update(self, planets:list[Planet], window:Window, dt:float):
+		screen_dimensions = window.dimensions
+		self.controls(window, planets, dt)
+		self.check_edges(window, screen_dimensions)
+	
+	def controls(self, window:Window, planets:list[Planet], dt:float):
+		a_pressed = window.input_manager.get_key("a")
+		d_pressed = window.input_manager.get_key('d')
+		if a_pressed and (not d_pressed):
+			window.sceneManager.scenes["GameScene"].objects["player"].transform.rotation += self.ROTATION_SPEED*dt
+		elif (not a_pressed) and d_pressed:
+			window.sceneManager.scenes["GameScene"].objects["player"].transform.rotation -= self.ROTATION_SPEED*dt
+
+		w_pressed = window.input_manager.get_key("w")
+		if w_pressed:
+			accel_force = Vector2(0,0)
+			accel_force.from_polar(
+				(self.ACCEL_SPEED, 270-window.sceneManager.scenes["GameScene"].objects["player"].transform.rotation)
+			)
+			window.sceneManager.scenes["GameScene"].objects["player"].transform.velocity += accel_force
+			if randint(1,2):
+				for _ in range(5):
+					vel, engine_offset = Vector2(0,0), Vector2(0,0)
+					engine_offset.from_polar((-25,window.sceneManager.scenes["GameScene"].objects["player"].transform.rotation-90+randint(-10,10)))
+					engine_offset.x = -engine_offset.x
+					vel.from_polar((0.2,window.sceneManager.scenes["GameScene"].objects["player"].transform.rotation-90+randint(-75,75)))
+					window.sceneManager.scenes["GameScene"].particle_emitters["engine"].emit(
+						list(window.sceneManager.scenes["GameScene"].objects["player"].transform.position + \
+							window.sceneManager.scenes["GameScene"].objects["player"].transform.size/2 + engine_offset),
+						list(vel)
+					)
+		
+		s_pressed = window.input_manager.get_key("s")
+		if s_pressed:
+			# Fire
+			if randint(1,2):
+				for _ in range(5):
+					vel, turret_offset = Vector2(0,0), Vector2(0,0)
+					turret_offset.from_polar((-25,window.sceneManager.scenes["GameScene"].objects["player"].transform.rotation+90+randint(-10,10)))
+					turret_offset.x = -turret_offset.x
+					vel.from_polar((2,window.sceneManager.scenes["GameScene"].objects["player"].transform.rotation+90+randint(-75,75)))
+					window.sceneManager.scenes["GameScene"].particle_emitters["turret"].emit(
+						list(window.sceneManager.scenes["GameScene"].objects["player"].transform.position + \
+							window.sceneManager.scenes["GameScene"].objects["player"].transform.size/2 + turret_offset),
+						list(vel)
+					)
+
+		if window.sceneManager.scenes["GameScene"].objects["player"].transform.velocity.magnitude_squared() >= self.MAX_VELOCITY*self.MAX_VELOCITY:
+			window.sceneManager.scenes["GameScene"].objects["player"].transform.velocity = \
+				window.sceneManager.scenes["GameScene"].objects["player"].transform.velocity.normalize()*self.MAX_VELOCITY
+		
+		window.sceneManager.scenes["GameScene"].objects["player"].transform.force = self.calcualte_resultant_gravity(planets, window)
+
+	@staticmethod
+	def check_edges(window:Window, screen_dimensions:tuple):
+		player_position = window.sceneManager.scenes["GameScene"].objects["player"].transform.position + \
+			window.sceneManager.scenes["GameScene"].objects["player"].transform.size/2
+		centre_offset = window.sceneManager.scenes["GameScene"].objects["player"].transform.size/2
+		if not 0 <= player_position.x <= screen_dimensions[0]:
+			window.sceneManager.scenes["GameScene"].objects["player"].transform.position.x = \
+				(screen_dimensions[0] if player_position.x-centre_offset.x<=0 else 0)-centre_offset.x
+		elif not 0 <= player_position.y <= screen_dimensions[1]:
+			window.sceneManager.scenes["GameScene"].objects["player"].transform.position.y = \
+				(screen_dimensions[1] if player_position.y-centre_offset.y<=0 else 0)-centre_offset.y
+	
+	def calcualte_resultant_gravity(self, planets:list[Planet], window:Window):
+		gravity = Vector2(0,0)
+		for planet in planets:
+			delta = (
+				(window.sceneManager.scenes["GameScene"].objects[planet.name].transform.position + \
+					(window.sceneManager.scenes["GameScene"].objects[planet.name].transform.size/2)) - \
+					(window.sceneManager.scenes["GameScene"].objects["player"].transform.position + \
+						(window.sceneManager.scenes["GameScene"].objects["player"].transform.size/2)))
+			
+			try:
+				magnitude = delta.magnitude()
+				delta = Vector2(planet.mass*delta.x/magnitude,planet.mass*delta.y/magnitude)*self.GRAVITY_SCALE
+			except:
+				delta = Vector2(0,0)
+			window.draw_line(
+				(window.sceneManager.scenes["GameScene"].objects["player"].transform.position + \
+					(window.sceneManager.scenes["GameScene"].objects["player"].transform.size/2)),
+				(window.sceneManager.scenes["GameScene"].objects["player"].transform.position + \
+					(window.sceneManager.scenes["GameScene"].objects["player"].transform.size/2))+delta*10
+			)
+			gravity += delta
+		return gravity
+
