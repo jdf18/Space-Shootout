@@ -1,0 +1,62 @@
+{
+	"sun" : {
+		"order" : 0,
+		"distance" : 0,
+		"mass" : 1E25,
+		"image" : "assets/images/sun.bmp"
+	},
+	"mercury" : {
+		"order" : 1,
+		"distance" : 57909050,
+		"mass" : 3.3011E23,
+		"image" : "assets/images/mercury.bmp"
+	},
+	"venus" : {
+		"order" : 2,
+		"distance" : 108208000,
+		"mass" : 4.8675E24,
+		"image" : "assets/images/venus.bmp"
+	},
+	"earth" : {
+		"order" : 3,
+		"distance" : 149597500,
+		"mass" : 5.97217E24,
+		"image":"assets/images/earth.bmp"
+	},
+	"mars" : {
+		"order" : 4,
+		"distance" : 227955500,
+		"mass" : 6.4171E23,
+		"image" : "assets/images/mars.bmp"
+	},
+	"jupiter" : {
+		"order" : 5,
+		"distance" : 778.479E6,
+		"mass" : 1.8982E27,
+		"image" : "assets/images/jupiter.bmp"
+	},
+	"saturn" : {
+		"order" : 6,
+		"distance" : 1433.525E6,
+		"mass" : 5.6834E26,
+		"image" : "assets/images/saturn.bmp"
+	},
+	"uranus" : {
+		"order" : 7,
+		"distance" : 2870.975E6,
+		"mass" : 8.6810E25,
+		"image" : "assets/images/uranus.bmp"
+	},
+	"neptune" : {
+		"order" : 8,
+		"distance" : 4500E6,
+		"mass" : 1.02413E26,
+		"image" : "assets/images/neptune.bmp"
+	},
+	"pluto" : {
+		"order" : 9,
+		"distance" : 5906380E3,
+		"mass" : 1.30E22,
+		"image" : "assets/images/pluto.bmp"
+	}
+}
