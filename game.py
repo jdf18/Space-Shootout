@@ -338,3 +338,54 @@ def get_transfer(c1:Vector2,r1:float,c2:Vector2,r2:float, theta=10) -> tuple[cal
 	return foo, angle
 
 def on_render_1v1Scene(self:Scene, pygame, screen:Surface, dt:float):
+	self.storage['player1hb'].render(screen, pygame)
+	self.storage['player2hb'].render(screen, pygame)
+
+def bullet_collision_callback(window:Window, name:str, other_name:str, life:float):
+	def check_if_kill():
+		if window.sceneManager.current_scene.storage["player1hb"].get_health() == 0:
+			on_end_game(window, 1)
+		elif window.sceneManager.current_scene.storage["player2hb"].get_health() == 0:
+			on_end_game(window, 2)
+	if window.sceneManager.current_scene_name == "1v1Scene":
+		if other_name == "player1" and (not name == "turret1"):
+			window.sceneManager.current_scene.storage["player1hb"] -= 1
+			check_if_kill()
+			return True
+		elif other_name == "player2" and (not name == "turret2"):
+			window.sceneManager.current_scene.storage["player2hb"] -= 1
+			check_if_kill()
+			return True
+		elif other_name in ['player1', 'player2']:
+			return False
+		else:
+			return True
+	return False
+
+def on_object_collision(window:Window, objA:Object, objB:Object):
+	if ("player" in objA.tags) and ("planet" in objB.tags):
+		#window.sceneManager.current_scene.objects[objA.name]
+		window.sceneManager.current_scene.storage[objA.name.lower()+"hb"].set_health(0)
+		t1 = Thread(target=on_end_game, args=(window, (1 if objA.name == "player1" else 2)), daemon=True)
+		t1.start()
+		
+def explosion(window:Window, player_id:int):
+	for i in range(300):
+		pe = window.sceneManager.current_scene.particle_emitters["exp"+str(player_id)]
+		vel = Vector2(0,0)
+		vel.from_polar((randint(10,50),randint(0,360)))
+		pe.emit(
+			window.sceneManager.current_scene.objects["player"+str(player_id)].transform.position + (window.sceneManager.current_scene.objects["player"+str(player_id)].transform.size/2),
+			vel, (20,30)
+		)
+		window.sceneManager.current_scene.objects["player"+str(player_id)].image.should_render = False
+
+def on_end_game(window:Window, player_id:int):
+	if not window.sceneManager.current_scene.storage['reset_timer']:
+		explosion(window, player_id)
+		window.sceneManager.current_scene.objects["endMessage"].text.text = f"Player {('2' if player_id == 1 else '1')} Wins!"
+		window.sceneManager.current_scene.objects["endMessage"].text.should_render = True
+		window.sceneManager.current_scene.objects["msgBox"].primitive.should_render = True
+		window.sceneManager.current_scene.storage['reset_timer'] = float(5)
+	return
+
