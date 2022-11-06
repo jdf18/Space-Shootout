@@ -103,7 +103,7 @@ class Planet:
 		return self.obj
 
 class Player:
-	def __init__(self, image_asset_id:int, player_id=None):
+	def __init__(self, image_asset_id:int, player_id=0):
 		self.position:Vector2 = Vector2(100,100)
 		self.image_asset_id:int = image_asset_id
 
@@ -113,10 +113,19 @@ class Player:
 		self.MAX_VELOCITY = 50
 
 		self.player_id = player_id
+		self.id_str = ('' if player_id == 0 else str(player_id))
 		self.objectname = "player" + (str(player_id) if player_id else "")
 		self.scene = ("default" if not player_id else "1v1Scene")
 		# ! this will probably cause errors
 		# TODO 
+		self.obj_name = "player"+self.id_str
+		print(self.scene,'/',self.obj_name)
+
+		self.keybinds = (
+			{'forwards':'w','left':'a','right':'d','shoot':'s'}
+			if player_id <= 1 else 
+			{'forwards':'UP','left':'LEFT','right':'RIGHT','shoot':'DOWN'}
+			)
 	def createGameObject(self, assetsManager:AssetsManager) -> Object:
 		self.obj = Object("player",self.position,size=Vector2(50,50))
 		self.obj.addComponent(Components.Image(self.image_asset_id), assetsManager)
@@ -128,33 +137,35 @@ class Player:
 		self.check_edges(window, screen_dimensions)
 	
 	def controls(self, window:Window, planets:list[Planet], dt:float):
-		a_pressed = window.input_manager.get_key("a")
-		d_pressed = window.input_manager.get_key('d')
+		a_pressed = window.input_manager.get_key(self.keybinds['left'])
+		d_pressed = window.input_manager.get_key(self.keybinds['right'])
 		if a_pressed and (not d_pressed):
-			window.sceneManager.scenes["GameScene"].objects["player"].transform.rotation += self.ROTATION_SPEED*dt
+			window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.rotation += self.ROTATION_SPEED*dt
 		elif (not a_pressed) and d_pressed:
-			window.sceneManager.scenes["GameScene"].objects["player"].transform.rotation -= self.ROTATION_SPEED*dt
+			window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.rotation -= self.ROTATION_SPEED*dt
 
-		w_pressed = window.input_manager.get_key("w")
+		w_pressed = window.input_manager.get_key(self.keybinds['forwards'])
 		if w_pressed:
 			accel_force = Vector2(0,0)
 			accel_force.from_polar(
-				(self.ACCEL_SPEED, 270-window.sceneManager.scenes["GameScene"].objects["player"].transform.rotation)
+				(self.ACCEL_SPEED, 270-window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.rotation)
 			)
-			window.sceneManager.scenes["GameScene"].objects["player"].transform.velocity += accel_force
+			window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.velocity += accel_force
 			if randint(1,2):
 				for _ in range(5):
 					vel, engine_offset = Vector2(0,0), Vector2(0,0)
-					engine_offset.from_polar((-25,window.sceneManager.scenes["GameScene"].objects["player"].transform.rotation-90+randint(-10,10)))
+					engine_offset.from_polar((-25,window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.rotation-90+randint(-10,10)))
 					engine_offset.x = -engine_offset.x
-					vel.from_polar((0.2,window.sceneManager.scenes["GameScene"].objects["player"].transform.rotation-90+randint(-75,75)))
-					window.sceneManager.scenes["GameScene"].particle_emitters["engine"].emit(
-						list(window.sceneManager.scenes["GameScene"].objects["player"].transform.position + \
-							window.sceneManager.scenes["GameScene"].objects["player"].transform.size/2 + engine_offset),
+					vel.from_polar((0.2,window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.rotation-90+randint(-75,75)))
+					window.sceneManager.scenes[self.scene].particle_emitters["engine"+self.id_str].emit(
+						list(window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.position + \
+							window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.size/2 + engine_offset),
 						list(vel)
 					)
 		
-		s_pressed = window.input_manager.get_key("s")
+		s_pressed = window.input_manager.get_key(self.keybinds['shoot'])
+		self.cooldown = max(0, self.cooldown-dt)
+		RELOAD_TIME = 0.5
 		if s_pressed:
 			# Fire
 			if randint(1,2):
@@ -169,32 +180,31 @@ class Player:
 						list(vel)
 					)
 
-		if window.sceneManager.scenes["GameScene"].objects["player"].transform.velocity.magnitude_squared() >= self.MAX_VELOCITY*self.MAX_VELOCITY:
-			window.sceneManager.scenes["GameScene"].objects["player"].transform.velocity = \
-				window.sceneManager.scenes["GameScene"].objects["player"].transform.velocity.normalize()*self.MAX_VELOCITY
+		if window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.velocity.magnitude_squared() >= self.MAX_VELOCITY*self.MAX_VELOCITY:
+			window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.velocity = \
+				window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.velocity.normalize()*self.MAX_VELOCITY
 		
-		window.sceneManager.scenes["GameScene"].objects["player"].transform.force = self.calcualte_resultant_gravity(planets, window)
+		window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.force = self.calcualte_resultant_gravity(planets, window)
 
-	@staticmethod
-	def check_edges(window:Window, screen_dimensions:tuple):
-		player_position = window.sceneManager.scenes["GameScene"].objects["player"].transform.position + \
-			window.sceneManager.scenes["GameScene"].objects["player"].transform.size/2
-		centre_offset = window.sceneManager.scenes["GameScene"].objects["player"].transform.size/2
+	def check_edges(self, window:Window, screen_dimensions:tuple):
+		player_position = window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.position + \
+			window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.size/2
+		centre_offset = window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.size/2
 		if not 0 <= player_position.x <= screen_dimensions[0]:
-			window.sceneManager.scenes["GameScene"].objects["player"].transform.position.x = \
+			window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.position.x = \
 				(screen_dimensions[0] if player_position.x-centre_offset.x<=0 else 0)-centre_offset.x
 		elif not 0 <= player_position.y <= screen_dimensions[1]:
-			window.sceneManager.scenes["GameScene"].objects["player"].transform.position.y = \
+			window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.position.y = \
 				(screen_dimensions[1] if player_position.y-centre_offset.y<=0 else 0)-centre_offset.y
 	
 	def calcualte_resultant_gravity(self, planets:list[Planet], window:Window):
 		gravity = Vector2(0,0)
 		for planet in planets:
 			delta = (
-				(window.sceneManager.scenes["GameScene"].objects[planet.name].transform.position + \
-					(window.sceneManager.scenes["GameScene"].objects[planet.name].transform.size/2)) - \
-					(window.sceneManager.scenes["GameScene"].objects["player"].transform.position + \
-						(window.sceneManager.scenes["GameScene"].objects["player"].transform.size/2)))
+				(window.sceneManager.scenes[self.scene].objects[planet.name].transform.position + \
+					(window.sceneManager.scenes[self.scene].objects[planet.name].transform.size/2)) - \
+					(window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.position + \
+						(window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.size/2)))
 			
 			try:
 				magnitude = delta.magnitude()
@@ -202,13 +212,17 @@ class Player:
 			except:
 				delta = Vector2(0,0)
 			window.draw_line(
-				(window.sceneManager.scenes["GameScene"].objects["player"].transform.position + \
-					(window.sceneManager.scenes["GameScene"].objects["player"].transform.size/2)),
-				(window.sceneManager.scenes["GameScene"].objects["player"].transform.position + \
-					(window.sceneManager.scenes["GameScene"].objects["player"].transform.size/2))+delta*10
+				(window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.position + \
+					(window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.size/2)),
+				(window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.position + \
+					(window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.size/2))+delta*10
 			)
 			gravity += delta
 		return gravity
+	
+	def link_health_bar(self, hb:HealthBar):
+		self.set_health = hb.set_health
+		self.get_health = hb.get_health
 
 class PathPrediction:
 	def __init__(self, iterations:int):
