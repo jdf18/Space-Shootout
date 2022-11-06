@@ -131,6 +131,7 @@ class Player:
 	def createGameObject(self, assetsManager:AssetsManager) -> Object:
 		self.obj = Object(self.obj_name,self.position,size=Vector2(50,50), tags=["player"])
 		self.obj.addComponent(Components.Image(self.image_asset_id), assetsManager)
+		self.obj.collider = CircleCollider()
 		return self.obj
 	
 	def update(self, planets:list[Planet], window:Window, dt:float):
@@ -233,13 +234,15 @@ class Player:
 		self.get_health = hb.get_health
 
 class PathPrediction:
-	def __init__(self, iterations:int):
+	def __init__(self, iterations:int, scene:str, object_name):
 		self.MAX_ITERATIONS = iterations
 		self.GRAVITY_SCALE = 5e-25
+		self.scene = scene
+		self.object_name = object_name
 	def update(self, planets:list[Planet], window:Window):
 		dt=0.25
 		last_point:Vector2 = self.get_player_pos(window)
-		velocity:Vector2 = window.sceneManager.scenes["GameScene"].objects["player"].transform.velocity.copy()
+		velocity:Vector2 = window.sceneManager.scenes[self.scene].objects[self.object_name].transform.velocity.copy()
 		for i in range(self.MAX_ITERATIONS):
 			force = self.calcualte_resultant_gravity(planets, window, last_point)
 			velocity += force*dt
@@ -249,17 +252,16 @@ class PathPrediction:
 			window.draw_line(last_point, new_point)
 			last_point = new_point
 
-	@staticmethod
-	def get_player_pos(window:Window) -> Vector2:
-		return (window.sceneManager.scenes["GameScene"].objects["player"].transform.position + \
-			   (window.sceneManager.scenes["GameScene"].objects["player"].transform.size/2)).copy()
+	def get_player_pos(self, window:Window) -> Vector2:
+		return (window.sceneManager.scenes[self.scene].objects[self.object_name].transform.position + \
+			   (window.sceneManager.scenes[self.scene].objects[self.object_name].transform.size/2)).copy()
 
 	def calcualte_resultant_gravity(self, planets:list[Planet], window:Window, position:Vector2):
 		gravity = Vector2(0,0)
 		for planet in planets:
 			delta = (
-				(window.sceneManager.scenes["GameScene"].objects[planet.name].transform.position + \
-					(window.sceneManager.scenes["GameScene"].objects[planet.name].transform.size/2)) - \
+				(window.sceneManager.scenes[self.scene].objects[planet.name].transform.position + \
+					(window.sceneManager.scenes[self.scene].objects[planet.name].transform.size/2)) - \
 					position)
 			try:
 				magnitude = delta.magnitude()
@@ -269,7 +271,8 @@ class PathPrediction:
 			gravity += delta
 		return gravity
 
-def menuScene_on_update(scene:Scene, dt:float):
+def menuScene_on_update(scene:Scene, dt:float, window:Window):
+	# Sets the position of the shuttle when the menu screen is open
 	if scene.is_transfer:
 		scene.transfer_value += dt / scene.transfer_time
 		# TODO Calculate position
@@ -388,4 +391,13 @@ def on_end_game(window:Window, player_id:int):
 		window.sceneManager.current_scene.objects["msgBox"].primitive.should_render = True
 		window.sceneManager.current_scene.storage['reset_timer'] = float(5)
 	return
+
+def on_1v1Scene_update(scene:Scene, dt:float, window:Window):
+	if type(scene.storage['reset_timer']) == float:
+		if scene.storage['reset_timer'] < 0:
+			window.sceneManager.reset_scene("MenuScene")
+			window.sceneManager.loadScene("MenuScene")
+			scene.storage['reset_timer'] = None
+		else:
+			scene.storage['reset_timer'] -= dt
 
