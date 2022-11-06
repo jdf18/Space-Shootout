@@ -110,7 +110,9 @@ class Player:
 		self.ROTATION_SPEED = 60
 		self.ACCEL_SPEED = 0.7
 		self.GRAVITY_SCALE = 5e-25
-		self.MAX_VELOCITY = 50
+		self.MAX_VELOCITY = 100
+
+		self.cooldown = 0
 
 		self.player_id = player_id
 		self.id_str = ('' if player_id == 0 else str(player_id))
@@ -127,7 +129,7 @@ class Player:
 			{'forwards':'UP','left':'LEFT','right':'RIGHT','shoot':'DOWN'}
 			)
 	def createGameObject(self, assetsManager:AssetsManager) -> Object:
-		self.obj = Object("player",self.position,size=Vector2(50,50))
+		self.obj = Object(self.obj_name,self.position,size=Vector2(50,50), tags=["player"])
 		self.obj.addComponent(Components.Image(self.image_asset_id), assetsManager)
 		return self.obj
 	
@@ -168,17 +170,23 @@ class Player:
 		RELOAD_TIME = 0.5
 		if s_pressed:
 			# Fire
-			if randint(1,2):
-				for _ in range(5):
+			try:
+				if self.cooldown <= 0:
+					self.cooldown += RELOAD_TIME
 					vel, turret_offset = Vector2(0,0), Vector2(0,0)
-					turret_offset.from_polar((-25,window.sceneManager.scenes["GameScene"].objects["player"].transform.rotation+90+randint(-10,10)))
+					turret_offset.from_polar((-25,window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.rotation+90))
 					turret_offset.x = -turret_offset.x
-					vel.from_polar((2,window.sceneManager.scenes["GameScene"].objects["player"].transform.rotation+90+randint(-75,75)))
-					window.sceneManager.scenes["GameScene"].particle_emitters["turret"].emit(
-						list(window.sceneManager.scenes["GameScene"].objects["player"].transform.position + \
-							window.sceneManager.scenes["GameScene"].objects["player"].transform.size/2 + turret_offset),
-						list(vel)
+					VEL_MAG_DELTA = 75
+					vel.from_polar((abs(window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.velocity.magnitude())+VEL_MAG_DELTA,
+						(-window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.rotation-90+randint(-3,3))))
+					window.sceneManager.scenes[self.scene].particle_emitters["turret"+self.id_str].emit(
+						list(window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.position + \
+							window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.size/2 + turret_offset),
+						list(vel),
+						(15,18)
 					)
+			except:
+				pass # Scene not created turret yet
 
 		if window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.velocity.magnitude_squared() >= self.MAX_VELOCITY*self.MAX_VELOCITY:
 			window.sceneManager.scenes[self.scene].objects[self.obj_name].transform.velocity = \
