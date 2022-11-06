@@ -2,12 +2,10 @@ from abc import abstractmethod
 from pygame.constants import *
 from pygame.event import Event
 
-from engine import Window
-
 class EventHandler:
 	def __init__(self):
 		pass
-	def handle_event(self, event: Event, window:Window):
+	def handle_event(self, event: Event, window):
 		# Pygame 1:
 		if event.type == QUIT:
 			self.onClose(window, )
@@ -51,7 +49,7 @@ class EventHandler:
 		elif event.type == FINGERUP:
 			self.onFingerUp(window, event.touch_id, event.finger_id, event.x, event.y, event.dx, event.dy)
 		elif event.type == MOUSEWHEEL:  # TODO which throws error
-			self.onMouseWheel(window, event.which, event.flipped, event.x, event.y, event.touch, event.precise_x, event.precise_y)
+			self.onMouseWheel(window, None, event.flipped, event.x, event.y, event.touch, event.precise_x, event.precise_y) # :event.which
 		elif event.type == MULTIGESTURE:
 			self.onMultigesture(window, event.touch_id, event.x, event.y, event.pinched, event.rotated, event.num_fingers)
 		elif event.type == TEXTEDITING:
