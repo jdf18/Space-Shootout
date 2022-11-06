@@ -192,15 +192,15 @@ def init1v1Scene():
 
 
 menuScene = initMenuScene()
-window.sceneManager.addScene(menuScene)
+window.sceneManager.addScene(menuScene, reset=initMenuScene)
 game1v1Scene = init1v1Scene()
-window.sceneManager.addScene(game1v1Scene)
+window.sceneManager.addScene(game1v1Scene, reset=init1v1Scene)
 gameSingleScene = initSingleScene()
 window.sceneManager.addScene(gameSingleScene)
 
-window.sceneManager.loadScene("MenuScene")
 window.start()
 
+window.load_scene("MenuScene")
 window.handle_events(handler)
 window.update()
 pp = game.PathPrediction(20)
