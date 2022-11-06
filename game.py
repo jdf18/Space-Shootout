@@ -280,3 +280,61 @@ def menuScene_on_update(scene:Scene, dt:float):
 		pos = scene.planet_pos + Vector2(cos(radians(scene.orbit_angle)), sin(radians(scene.orbit_angle)))*scene.orbit_radius
 		scene.objects["shuttle"].transform.position = pos
 		scene.objects["shuttle"].transform.rotation = 180 - scene.orbit_angle
+
+	pos = window.input_manager.get_mouse_pos()
+	# ! This does not work at all (kinda) and looks really janky
+	# TODO
+	# if scene.storage["waiting"]:
+	# 	ang = Vector2(1,0).angle_to(scene.objects["shuttle"].transform.position-scene.planet_pos)
+	# 	if ang > scene.storage["wanted_angle"] and scene.storage["angle_reset"]:
+	# 		scene.storage["waiting"] = False
+	# 	elif ang < scene.storage["wanted_angle"] and scene.storage["angle_reset"]:
+	# 		scene.storage["angle_reset"] = True
+
+	if scene.storage["in_transfer"]: #and (not scene.storage["waiting"]):
+		scene.storage["transfer_time"] += dt
+		scene.objects["shuttle"].transform.position = scene.storage["orbit_transfer"].__call__(scene.storage["transfer_time"]) - (scene.objects["shuttle"].transform.size/2)
+		if scene.storage["transfer_time"] > 1:
+			scene.storage["in_transfer"] = False
+			scene.planet_pos = scene.objects[scene.storage['planet_orbit']].transform.position
+			scene.orbit_angle = Vector2(1,0).angle_to(scene.objects["shuttle"].transform.position-scene.planet_pos)
+		return # dont check the mouse position again
+	# get the planet the mouse is currently over and calculate a orbital path
+	for obj in scene.objects.values():
+		if "planet" in obj.tags:
+			col:bool = obj.collider.test(pos)
+			if col:
+				if scene.storage["planet_orbit"] != obj.name:
+					scene.storage["in_transfer"] = True
+					scene.storage["waiting"] = True
+					scene.storage["transfer_time"] = 0
+					scene.storage["orbit_transfer"], scene.storage["wanted_angle"] = get_transfer(
+						scene.objects[obj.name].transform.position + (scene.objects[obj.name].transform.size/2),
+						scene.objects[obj.name].transform.size.x/2+scene.orbit_radius,
+						scene.objects[scene.storage["planet_orbit"]].transform.position + (scene.objects[scene.storage["planet_orbit"]].transform.size/2),
+						scene.objects[scene.storage["planet_orbit"]].transform.size.x/2+scene.orbit_radius,
+					)
+					scene.storage["angle_reset"] = (Vector2(1,0).angle_to(scene.objects["shuttle"].transform.position-scene.planet_pos) < scene.storage["wanted_angle"])
+				scene.storage['planet_orbit'] = obj.name
+
+def get_transfer(c1:Vector2,r1:float,c2:Vector2,r2:float, theta=10) -> tuple[callable, float]:
+	# Generate a funciton that returns the position of the shuttle during transfers and angle needed to start one
+	P1 = c1 + (c2-c1).normalize().rotate(-90+theta)*r1
+	P3 = c2 + (c2-c1).normalize().rotate(-90-theta)*r2
+	a = -1/(tan(-90+theta+(c2-c1).as_polar()[1]))
+	b = 1/(tan(-90+theta+(c2-c1).as_polar()[1]))*P1.x+P1.y
+	c = -1/(tan(-90-theta+(c2-c1).as_polar()[1]))
+	d = 1/(tan(-90-theta+(c2-c1).as_polar()[1]))*P3.x+P3.y
+	P2 = Vector2(
+		(d-b)/(a-c),
+		a*(d-b)/(a-c)+b
+	)
+	def foo(t:float):
+		return lerp(t,
+			lerp(t,P1,P2),
+			lerp(t,P2,P3)
+		)
+	angle = Vector2(1,0).angle_to(P1-c1)
+	return foo, angle
+
+def on_render_1v1Scene(self:Scene, pygame, screen:Surface, dt:float):
