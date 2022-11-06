@@ -202,8 +202,9 @@ window.start()
 
 window.load_scene("MenuScene")
 window.handle_events(handler)
-window.update()
-pp = game.PathPrediction(20)
+
+pp1 = game.PathPrediction(20, "1v1Scene", "player1")
+pp2 = game.PathPrediction(20, "1v1Scene", "player2")
 while window.running:
 	window.render()
 	dt = window.update()
@@ -211,9 +212,10 @@ while window.running:
 	if current_scene == "MenuScene":
 		pass
 	elif current_scene == "1v1Scene":
-		player.update(planets, window, dt)
-		pp.update(planets, window)
+		player1.update(planets, window, dt)
+		player2.update(planets, window, dt)
+		pp1.update(planets, window)
+		pp2.update(planets, window)
 	window.update_screen()
 	window.handle_events(handler)
-
 del window
