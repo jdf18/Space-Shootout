@@ -12,6 +12,52 @@ from engine.sceneManager import Scene
 from engine.colliders import Collider, CircleCollider
 from engine.util import get_lerp, lerp
 
+class HealthBar:
+	def __init__(self, max_health:int, location:Vector2, init_health=None):
+		if init_health == None: init_health = max_health
+		self.health = min(max_health, init_health)
+		self.max_health = max_health
+		self.bar_length = 200
+		self.ratio = self.bar_length / self.max_health # pixels per unit health
+		self.location = location
+		self.height = 25
+
+		self.visual_health = init_health
+		self.health_change_speed = 0.5
+	def set_health(self, value:int):
+		self.health = max(0,min(self.max_health, value))
+	def get_health(self) -> int:
+		return self.health
+	def render(self, screen, pygame):
+		#self.visual_health
+		#if self.health: pygame.draw.rect(screen, (255,0,0), (self.location.x, self.location.y, self.health*self.ratio, self.height))
+		#pygame.draw.rect(screen, (255,255,255), (self.location.x, self.location.y, self.bar_length, self.height), 4)
+		# ! this is meant to look good but it doesn't really work
+		# TODO
+		transition_width = 0
+		transition_color = (255,0,0)
+
+		if self.visual_health < self.health:
+			self.visual_health += self.health_change_speed
+			transition_width = (self.health - self.visual_health)/self.ratio
+			transition_color = (0,255,0)
+		elif self.visual_health > self.health:
+			self.visual_health -= self.health_change_speed
+			transition_width = (self.health - self.visual_health)/self.ratio
+			transition_color = (255,255,0)
+
+		if self.health: pygame.draw.rect(screen, (255,0,0), (self.location.x+(self.visual_health*self.ratio), self.location.y, (self.health-self.visual_health)*self.ratio, self.height))
+		if self.health: pygame.draw.rect(screen, (255,0,0), (self.location.x, self.location.y, self.health*self.ratio, self.height))
+		pygame.draw.rect(screen, (255,255,255), (self.location.x, self.location.y, self.bar_length, self.height), 4)
+
+	def __iadd__(self, other:int):
+		self.health += other
+		return self
+	def __isub__(self, other:int):
+		self.health -= other
+		return self
+
+
 class Planet:
 	def __init__(self, name:str, planetData:dict) -> None:
 		self.name:str = name
