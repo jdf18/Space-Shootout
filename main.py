@@ -5,12 +5,13 @@ from pygame import Vector2, Vector3
 from engine.constants import Constants
 from engine.objects import Components, Object
 from engine.sceneManager import Scene
-from engine.util import createPrintCallback
+from engine.util import createPrintCallback, copy_func
 from engine.input import Input
 from engine.particle import ParticleEmitter
 from pygame import BUTTON_LEFT, BUTTON_RIGHT, image, transform
 from json import dumps, loads
 from random import shuffle
+from engine.colliders import CircleCollider
 
 global player, planets
 
