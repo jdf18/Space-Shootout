@@ -97,8 +97,9 @@ class Planet:
 	def createGameObject(self, window_dimensions: tuple, assetsManager:AssetsManager, orbitno:int) -> Object:
 		self.calculate_diameter()
 		self.calculate_position(window_dimensions, orbitno)
-		self.obj = Object(self.name,self.position, size=self.size)
+		self.obj = Object(self.name,self.position, size=self.size, tags=["planet"])
 		self.obj.addComponent(Components.Image(self.image_asset_id), assetsManager)
+		self.obj.collider = CircleCollider()
 		return self.obj
 
 class Player:
